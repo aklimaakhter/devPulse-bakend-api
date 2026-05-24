@@ -37,9 +37,9 @@ https://your-live-url.com
 npm install
 
  3. Create .env file
-PORT=5000
-CONNECTIONSTRING="postgresql://neondb_owner:npg_xtWC0vyruK5Z@ep-quiet-bread-aq4u9bqp-pooler.c-8.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
-JWT_SECRET=eiuueiruoe5rfdk,rf4po
+* PORT=5000
+* CONNECTIONSTRING="postgresql://neondb_owner:npg_xtWC0vyruK5Z@ep-quiet-bread-aq4u9bqp-pooler.c-8.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+* JWT_SECRET=eiuueiruoe5rfdk,rf4po
 
  4. Run project
 npm run dev
@@ -48,38 +48,38 @@ npm run dev
 --------------
 # API Endpoints
 --------------
-Auth Module
-POST /api/auth/signup
-POST /api/auth/login
+# Auth Module
+* POST /api/auth/signup
+* POST /api/auth/login
 
-Issues Module
-POST /api/issues (Authenticated users)
-GET /api/issues (Public)
-GET /api/issues/:id (Public)
-PATCH /api/issues/:id (Maintainer / Owner)
-DELETE /api/issues/:id (Maintainer only)
+# Issues Module
+* POST /api/issues (Authenticated users)
+* GET /api/issues (Public)
+* GET /api/issues/:id (Public)
+* PATCH /api/issues/:id (Maintainer / Owner)
+* DELETE /api/issues/:id (Maintainer only)
 
 
 ---------------------
 # Database Schema Summary
 ---------------------
 
-users table
-id (SERIAL PRIMARY KEY)
-name (VARCHAR)
-email (UNIQUE)
-password (VARCHAR)
-role (contributor | maintainer)
-created_at (TIMESTAMP)
-updated_at (TIMESTAMP)
+# users table
+* id (SERIAL PRIMARY KEY)
+* name (VARCHAR)
+* email (UNIQUE)
+* password (VARCHAR)
+* role (contributor | maintainer)
+* created_at (TIMESTAMP)
+* updated_at (TIMESTAMP)
 
 ------------
-Issue Table:
-id (SERIAL PRIMARY KEY)
-title (VARCHAR 150)
-description (TEXT)
-type (bug | feature_request)
-status (open | in_progress | resolved)
-reporter_id (INTEGER)
-created_at (TIMESTAMP)
-updated_at (TIMESTAMP)
+# Issue Table:
+* id (SERIAL PRIMARY KEY)
+* title (VARCHAR 150)
+* description (TEXT)
+* type (bug | feature_request)
+* status (open | in_progress | resolved)
+* reporter_id (INTEGER)
+* created_at (TIMESTAMP)
+* updated_at (TIMESTAMP)
