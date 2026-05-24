@@ -5,6 +5,7 @@ import { toQueryString } from "../../utils/query";
 import sendResponse from "../../utils/sendResponse";
 
 
+
 const createIssues = async (req: Request, res: Response) => {
     try {
 
@@ -34,13 +35,16 @@ const createIssues = async (req: Request, res: Response) => {
 };
 
 const getAllIssues = async (req: Request, res: Response) => {
+    
     try {
+        
         const result = await issuesService.getAllIssueIntoDB({
             sort: toQueryString(req.query.sort),
             type: toQueryString(req.query.type),
             status: toQueryString(req.query.status)
         });
 
+          
 
         return sendResponse(res, {
             statusCode: 200,
