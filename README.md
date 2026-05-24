@@ -28,9 +28,9 @@ https://your-live-url.com
 * cors
 
 
-##  Setup Instructions
+ # Setup Instructions
 
-``` bash
+ # bash
  1. Folder create and vs code open
 
  2. Install dependencies
@@ -46,7 +46,7 @@ npm run dev
 
 
 --------------
-``` API Endpoints
+# API Endpoints
 --------------
 Auth Module
 POST /api/auth/signup
@@ -61,7 +61,7 @@ DELETE /api/issues/:id (Maintainer only)
 
 
 ---------------------
-Database Schema Summary
+# Database Schema Summary
 ---------------------
 
 users table
