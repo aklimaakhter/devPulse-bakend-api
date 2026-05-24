@@ -28,7 +28,8 @@ const issueCreateIntoDB = async (
     return result.rows[0];
 };
 
-const getAllIssueIntoDB = async () => {
+const getAllIssueIntoDB = async (payload:any) => {
+    const {sort, type, status}=payload;
 
     const issues = await pool.query(`
         SELECT * FROM issues ORDER BY created_at DESC

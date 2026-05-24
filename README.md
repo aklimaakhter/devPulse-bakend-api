@@ -3,7 +3,7 @@ devPulse-bakend-api
 
 
 # Live URL
-https://your-live-url.com
+https://dev-palse-assaignment-2.vercel.app/
 
 
 # Features: 

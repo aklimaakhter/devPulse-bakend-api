@@ -1,4 +1,4 @@
-export const toQueryString = (v: unknown) => {
+export const toQueryString = (v: any) => {
     if (typeof v === "string") return v;
     if (Array.isArray(v)) return v[0];
     return undefined;
