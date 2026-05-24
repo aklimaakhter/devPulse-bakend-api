@@ -144,24 +144,52 @@ const updateIssueIntoDB = async (
     return result.rows[0];
 };
 
-const deleteIssueFromDB = async (id: string, user: any) => {
+// const deleteIssueFromDB = async (id: string, user: any) => {
 
   
-    if (user.role !== "maintainer") {
-        throw new Error("Forbidden: Only maintainer can delete issues");
-    }
+//     if (user.role !== "maintainer") {
+//         throw new Error("Forbidden: Only maintainer can delete issues");
+//     }
 
     
+//     const issueResult = await pool.query(
+//         `SELECT * FROM issues WHERE id = $1`,
+//         [id]
+//     );
+
+//     const issue = issueResult.rows[0];
+
+//     if (!issue) return null;
+
+    
+//     await pool.query(
+//         `DELETE FROM issues WHERE id = $1`,
+//         [id]
+//     );
+
+//     return true;
+// };
+
+const deleteIssueFromDB = async (id: string, user: any) => {
+
+    
+    if (user.role !== "maintainer") {
+        const error = new Error("Forbidden");
+        (error as any).statusCode = 403;
+        throw error;
+    }
+
+   
     const issueResult = await pool.query(
         `SELECT * FROM issues WHERE id = $1`,
         [id]
     );
 
-    const issue = issueResult.rows[0];
+    if (issueResult.rows.length === 0) {
+        return null;
+    }
 
-    if (!issue) return null;
-
-    
+   
     await pool.query(
         `DELETE FROM issues WHERE id = $1`,
         [id]
