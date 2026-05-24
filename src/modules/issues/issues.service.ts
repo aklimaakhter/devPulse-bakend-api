@@ -61,11 +61,39 @@ const getAllIssueIntoDB = async () => {
 
 const getSingleIssueIntoDB = async (id: string) => {
 
-    const result = await pool.query(`
-            SELECT * FROM issues WHERE id=$1
-            `, [id]);
-    return result.rows[0];
-}
+    const issueResult = await pool.query(`
+        SELECT *
+        FROM issues
+        WHERE id = $1
+    `, [id]);
+
+    if (issueResult.rows.length === 0) {
+        throw new Error("Issue not found");
+    }
+
+    const issue = issueResult.rows[0];
+
+    const userResult = await pool.query(`
+        SELECT id, name, role
+        FROM users
+        WHERE id = $1
+    `, [issue.reporter_id]);
+
+    const reporter = userResult.rows[0];
+
+    const formatted = {
+        id: issue.id,
+        title: issue.title,
+        description: issue.description,
+        type: issue.type,
+        status: issue.status,
+        reporter: reporter,
+        created_at: issue.created_at,
+        updated_at: issue.updated_at
+    };
+
+    return formatted;
+};
 
 const updateIssueIntoDB = async (
     payload: IIssue,
