@@ -98,6 +98,7 @@ const updatedIssues = async (req: Request, res: Response) => {
     try {
 
         const user = (req as any).user;
+        console.log(user);
         const id = req.params.id;
 
         const result = await issuesService.updateIssueIntoDB(

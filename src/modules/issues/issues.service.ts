@@ -101,17 +101,18 @@ const updateIssueIntoDB = async (
     user: any
 ) => {
 
-    // 🔹 1. Get issue first
+
     const issueResult = await pool.query(
         `SELECT * FROM issues WHERE id = $1`,
         [id]
     );
 
     const issue = issueResult.rows[0];
+    
 
     if (!issue) return null;
 
-    
+
     const isMaintainer = user.role === "maintainer";
     const isOwner = issue.reporter_id === user.id;
 
@@ -119,14 +120,17 @@ const updateIssueIntoDB = async (
         throw new Error("Forbidden");
     }
 
-  
+    console.log(issue.reporter_id);
+    console.log(user.id);
+
+
     if (!isMaintainer && issue.status !== "open") {
         throw new Error("You can only update open issues");
     }
 
     const { title, description, type } = payload;
 
- 
+
     const result = await pool.query(
         `
         UPDATE issues 
@@ -144,42 +148,16 @@ const updateIssueIntoDB = async (
     return result.rows[0];
 };
 
-// const deleteIssueFromDB = async (id: string, user: any) => {
-
-  
-//     if (user.role !== "maintainer") {
-//         throw new Error("Forbidden: Only maintainer can delete issues");
-//     }
-
-    
-//     const issueResult = await pool.query(
-//         `SELECT * FROM issues WHERE id = $1`,
-//         [id]
-//     );
-
-//     const issue = issueResult.rows[0];
-
-//     if (!issue) return null;
-
-    
-//     await pool.query(
-//         `DELETE FROM issues WHERE id = $1`,
-//         [id]
-//     );
-
-//     return true;
-// };
-
 const deleteIssueFromDB = async (id: string, user: any) => {
 
-    
+
     if (user.role !== "maintainer") {
         const error = new Error("Forbidden");
         (error as any).statusCode = 403;
         throw error;
     }
 
-   
+
     const issueResult = await pool.query(
         `SELECT * FROM issues WHERE id = $1`,
         [id]
@@ -189,7 +167,7 @@ const deleteIssueFromDB = async (id: string, user: any) => {
         return null;
     }
 
-   
+
     await pool.query(
         `DELETE FROM issues WHERE id = $1`,
         [id]
