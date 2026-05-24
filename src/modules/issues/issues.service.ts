@@ -28,39 +28,35 @@ const issueCreateIntoDB = async (
     return result.rows[0];
 };
 
-const getAllIssueIntoDB = async (filters: {
-    sort?: string;
-    type?: string;
-    status?: string;
-}) => {
+const getAllIssueIntoDB = async () => {
 
-    const { sort, type, status } = filters;
+    const issues = await pool.query(`
+        SELECT * FROM issues ORDER BY created_at DESC
+    `);
 
-    let query = `SELECT * FROM issues WHERE 1=1`;
-    const values: any[] = [];
+    const formatted = [];
 
-    
-    if (type) {
-        values.push(type);
-        query += ` AND type = $${values.length}`;
+    for (const issue of issues.rows) {
+
+        const user = await pool.query(`
+            SELECT id, name, role
+            FROM users
+            WHERE id = $1
+        `, [issue.reporter_id]);
+
+        formatted.push({
+            id: issue.id,
+            title: issue.title,
+            description: issue.description,
+            type: issue.type,
+            status: issue.status,
+            reporter: user.rows[0],
+            created_at: issue.created_at,
+            updated_at: issue.updated_at
+        });
     }
 
-    
-    if (status) {
-        values.push(status);
-        query += ` AND status = $${values.length}`;
-    }
-
-    
-    if (sort === "oldest") {
-        query += ` ORDER BY created_at ASC`;
-    } else {
-        query += ` ORDER BY created_at DESC`;
-    }
-
-    const result = await pool.query(query, values);
-
-    return result.rows;
+    return formatted;
 };
 
 const getSingleIssueIntoDB = async (id: string) => {
