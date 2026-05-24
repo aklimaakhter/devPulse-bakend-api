@@ -95,42 +95,95 @@ const getSingleIssueIntoDB = async (id: string) => {
     return formatted;
 };
 
-const updateIssueIntoDB = async (
-    payload: IIssue,
-    id: string,
-    user: IJwtUser) => {
-    // const { title, description, type } = payload;
+// const updateIssueIntoDB = async (
+//     payload: IIssue,
+//     id: string,
+//     user: IJwtUser) => {
+    
 
-    const issueRes = await pool.query(
-        `SELECT * FROM issues WHERE id=$1`,
+//     const issueRes = await pool.query(
+//         `SELECT * FROM issues WHERE id=$1`,
+//         [id]
+//     );
+//     const issue = issueRes.rows[0];
+
+//     if (!issue) {
+//         throw new Error("Issue not found");
+//     }
+
+//     if (
+//         user.role !== "maintainer" &&
+//         issue.reporter_id !== user.id
+//     ) {
+//         throw new Error("Forbidden");
+//     }
+
+//     const { title, description, type, status } = payload;
+
+
+//     const result = await pool.query(`
+//         UPDATE issues SET 
+//         title=COALESCE($1, title), 
+//         description=COALESCE($2, description), 
+        
+//         type=COALESCE($3, type)
+//         WHERE id = $4 RETURNING *
+//         `, [title, description, type, id]);
+//     return result.rows[0];
+// }
+
+
+
+const updateIssueIntoDB = async (
+    id: string,
+    payload: any,
+    user: any
+) => {
+
+    // 🔹 1. Get issue first
+    const issueResult = await pool.query(
+        `SELECT * FROM issues WHERE id = $1`,
         [id]
     );
-    const issue = issueRes.rows[0];
 
-    if (!issue) {
-        throw new Error("Issue not found");
-    }
+    const issue = issueResult.rows[0];
 
-    if (
-        user.role !== "maintainer" &&
-        issue.reporter_id !== user.id
-    ) {
+    if (!issue) return null;
+
+    
+    const isMaintainer = user.role === "maintainer";
+    const isOwner = issue.reporter_id === user.id;
+
+    if (!isMaintainer && !isOwner) {
         throw new Error("Forbidden");
     }
 
-    const { title, description, type, status } = payload;
+  
+    if (!isMaintainer && issue.status !== "open") {
+        throw new Error("You can only update open issues");
+    }
 
+    const { title, description, type } = payload;
 
-    const result = await pool.query(`
-        UPDATE issues SET 
-        title=COALESCE($1, title), 
-        description=COALESCE($2, description), 
-        
-        type=COALESCE($3, type)
-        WHERE id = $4 RETURNING *
-        `, [title, description, type, id]);
+ 
+    const result = await pool.query(
+        `
+        UPDATE issues 
+        SET 
+            title = COALESCE($1, title),
+            description = COALESCE($2, description),
+            type = COALESCE($3, type),
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = $4
+        RETURNING *
+        `,
+        [title, description, type, id]
+    );
+
     return result.rows[0];
-}
+};
+
+
 
 const deleteUserIntoDB = async (id: string) => {
     const result = await pool.query(`

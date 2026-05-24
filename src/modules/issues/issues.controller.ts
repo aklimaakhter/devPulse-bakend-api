@@ -1,12 +1,13 @@
 
 import type { Request, Response } from "express";
 import { issuesService } from "./issues.service";
+import { toQueryString } from "../../utils/query";
 
 
 const createIssues = async (req: Request, res: Response) => {
     try {
 
-        const user = (req as any).user; 
+        const user = (req as any).user;
 
         const result = await issuesService.issueCreateIntoDB(
             req.body,
@@ -27,17 +28,12 @@ const createIssues = async (req: Request, res: Response) => {
     }
 };
 
-
-
 const getAllIssues = async (req: Request, res: Response) => {
     try {
-
-        const { sort, type, status } = req.query;
-
         const result = await issuesService.getAllIssueIntoDB({
-            sort: sort as string,
-            type: type as string,
-            status: status as string
+            sort: toQueryString(req.query.sort),
+            type: toQueryString(req.query.type),
+            status: toQueryString(req.query.status)
         });
 
         return res.status(200).json({
@@ -82,36 +78,71 @@ const getSingleIssues = async (req: Request, res: Response) => {
     }
 };
 
+// const updatedIssues = async (req: Request, res: Response) => {
+//     const { id } = req.params;
+
+//     const user = (req as any).user;
+//     try {
+//         const result = await issuesService.updateIssueIntoDB(req.body, id as string, user)
+
+//         if (result.rows.length === 0) {
+//             res.status(404).json({
+//                 success: false,
+//                 message: "Issue not found",
+//                 data: {}
+//             })
+
+//         }
+
+//         res.status(200).json({
+//             success: true,
+//             message: "Issues update successfully",
+//             data: result.rows[0]
+//         })
+
+//     } catch (error: any) {
+//         res.status(500).json({
+//             message: error.message,
+//             error: error
+
+//         })
+//     }
+// }
+
 const updatedIssues = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    
-    const user = (req as any).user;
     try {
-        const result = await issuesService.updateIssueIntoDB(req.body, id as string, user)
 
-        if (result.rows.length === 0) {
-            res.status(404).json({
+        const user = (req as any).user;
+        const id = req.params.id;
+
+        const result = await issuesService.updateIssueIntoDB(
+            id,
+            req.body,
+            user
+        );
+
+        if (!result) {
+            return res.status(404).json({
                 success: false,
-                message: "Issue not found",
-                data: {}
-            })
-
+                message: "Issue not found"
+            });
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
-            message: "Issues update successfully",
-            data: result.rows[0]
-        })
+            message: "Issue updated successfully",
+            data: result
+        });
 
     } catch (error: any) {
-        res.status(500).json({
-            message: error.message,
-            error: error
-
-        })
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
-}
+};
+
+
 
 const deleteIssue = async (req: Request, res: Response) => {
     const { id } = req.params;
@@ -130,7 +161,7 @@ const deleteIssue = async (req: Request, res: Response) => {
         res.status(200).json({
             success: true,
             message: "Issue deleted successfully"
-            
+
         })
 
 
