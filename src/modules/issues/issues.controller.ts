@@ -141,7 +141,7 @@ const deleteIssue = async (req: Request, res: Response) => {
         const result = await issuesService.deleteIssueFromDB(id as string, user);
 
         if (!result) {
-                return sendResponse(res, {
+            return sendResponse(res, {
                 statusCode: 404,
                 success: false,
                 message: "Issue not found.",
@@ -153,7 +153,7 @@ const deleteIssue = async (req: Request, res: Response) => {
             statusCode: 200,
             success: true,
             message: "Issue deleted successfully.",
-            
+
 
         })
     } catch (error: any) {
