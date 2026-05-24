@@ -95,45 +95,6 @@ const getSingleIssueIntoDB = async (id: string) => {
     return formatted;
 };
 
-// const updateIssueIntoDB = async (
-//     payload: IIssue,
-//     id: string,
-//     user: IJwtUser) => {
-    
-
-//     const issueRes = await pool.query(
-//         `SELECT * FROM issues WHERE id=$1`,
-//         [id]
-//     );
-//     const issue = issueRes.rows[0];
-
-//     if (!issue) {
-//         throw new Error("Issue not found");
-//     }
-
-//     if (
-//         user.role !== "maintainer" &&
-//         issue.reporter_id !== user.id
-//     ) {
-//         throw new Error("Forbidden");
-//     }
-
-//     const { title, description, type, status } = payload;
-
-
-//     const result = await pool.query(`
-//         UPDATE issues SET 
-//         title=COALESCE($1, title), 
-//         description=COALESCE($2, description), 
-        
-//         type=COALESCE($3, type)
-//         WHERE id = $4 RETURNING *
-//         `, [title, description, type, id]);
-//     return result.rows[0];
-// }
-
-
-
 const updateIssueIntoDB = async (
     id: string,
     payload: any,
@@ -183,20 +144,38 @@ const updateIssueIntoDB = async (
     return result.rows[0];
 };
 
+const deleteIssueFromDB = async (id: string, user: any) => {
+
+  
+    if (user.role !== "maintainer") {
+        throw new Error("Forbidden: Only maintainer can delete issues");
+    }
+
+    
+    const issueResult = await pool.query(
+        `SELECT * FROM issues WHERE id = $1`,
+        [id]
+    );
+
+    const issue = issueResult.rows[0];
+
+    if (!issue) return null;
+
+    
+    await pool.query(
+        `DELETE FROM issues WHERE id = $1`,
+        [id]
+    );
+
+    return true;
+};
 
 
-const deleteUserIntoDB = async (id: string) => {
-    const result = await pool.query(`
-        DELETE FROM issues WHERE id=$1
-        RETURNING *
-        `, [id]);
-    return result;
-}
 export const issuesService = {
     issueCreateIntoDB,
     getAllIssueIntoDB,
     getSingleIssueIntoDB,
     updateIssueIntoDB,
-    deleteUserIntoDB
+    deleteIssueFromDB
 
 };
