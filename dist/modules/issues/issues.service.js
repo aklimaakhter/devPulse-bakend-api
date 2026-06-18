@@ -1,6 +1,12 @@
 import { pool } from "../../db";
 const issueCreateIntoDB = async (payload, userId) => {
     const { title, description, type } = payload;
+    if (!title || !description || !type) {
+        throw new Error("All fields are required");
+    }
+    if (!["bug", "feature_request"].includes(type)) {
+        throw new Error("Invalid type");
+    }
     const result = await pool.query(`
         INSERT INTO issues (
             title,

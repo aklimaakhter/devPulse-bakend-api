@@ -30,11 +30,7 @@ const loginUser = async (req: Request, res: Response) => {
 
     try {
         const result = await authService.loginUserIntoDB(req.body)
-        // res.status(201).json({
-        //     success: true,
-        //     message: "Login successful",
-        //     data: result
-        // })
+
         sendResponse(res, {
             statusCode: 200,
             success: true,
@@ -44,11 +40,7 @@ const loginUser = async (req: Request, res: Response) => {
         })
 
     } catch (error: any) {
-        // res.status(500).json({
-        //     success: false,
-        //     message: error.message,
-        //     error: error
-        // })
+       
         sendResponse(res, {
             statusCode: 500,
             success: false,

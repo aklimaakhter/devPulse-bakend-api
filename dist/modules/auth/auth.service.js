@@ -32,12 +32,12 @@ const loginUserIntoDB = async (payload) => {
         name: user.name,
         role: user.role
     };
-    const accessToken = jwt.sign(jwtPayload, config.secret, {
+    const token = jwt.sign(jwtPayload, config.secret, {
         expiresIn: '1d'
     });
     // return {accessToken};
     return {
-        accessToken,
+        token,
         user: {
             id: user.id,
             name: user.name,

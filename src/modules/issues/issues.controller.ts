@@ -1,8 +1,6 @@
 
 import type { Request, Response } from "express";
 import { issuesService } from "./issues.service";
-// import { toQueryString } from "../../utils/query";
-
 import sendResponse from "../../utils/sendResponse";
 import { toQueryString } from "../../utils/query";
 

@@ -28,7 +28,6 @@ const loginUserIntoDB = async (payload: {
 }) => {
     const { email, password } = payload;
 
-    // const hashPassword = await bcrypt.hash(password, 10);
 
     const userData = await pool.query(`
         SELECT * FROM users WHERE email=$1

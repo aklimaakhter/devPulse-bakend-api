@@ -5,7 +5,7 @@ export declare const authService: {
         email: string;
         password: string;
     }) => Promise<{
-        accessToken: string;
+        token: string;
         user: {
             id: any;
             name: any;
