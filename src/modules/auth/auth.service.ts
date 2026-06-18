@@ -20,6 +20,8 @@ const createUserIntoDB = async (payload: IUser) => {
 
     return result;
 }
+
+
 const loginUserIntoDB = async (payload: {
     email: string,
     password: string
@@ -49,22 +51,22 @@ const loginUserIntoDB = async (payload: {
         name: user.name,
         role: user.role
     }
-    const accessToken = jwt.sign(jwtPayload, config.secret as string, {
+    const token = jwt.sign(jwtPayload, config.secret as string, {
         expiresIn: '1d'
     })
 
     // return {accessToken};
     return {
-    accessToken,
-    user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        created_at: user.created_at,
-        updated_at: user.updated_at
+        token,
+        user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            created_at: user.created_at,
+            updated_at: user.updated_at
+        }
     }
-}
 }
 
 export const authService = {

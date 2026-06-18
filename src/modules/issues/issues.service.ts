@@ -1,6 +1,4 @@
 import { pool } from "../../db";
-import type { IJwtUser } from "../auth/auth.interface";
-import type { IIssue } from "./issue.interface";
 
 
 const issueCreateIntoDB = async (
@@ -13,6 +11,14 @@ const issueCreateIntoDB = async (
 ) => {
 
     const { title, description, type } = payload;
+
+    if (!title || !description || !type) {
+        throw new Error("All fields are required");
+    }
+
+    if (!["bug", "feature_request"].includes(type)) {
+        throw new Error("Invalid type");
+    }
 
     const result = await pool.query(`
         INSERT INTO issues (
@@ -28,8 +34,8 @@ const issueCreateIntoDB = async (
     return result.rows[0];
 };
 
-const getAllIssueIntoDB = async (payload:any) => {
-    const {sort, type, status}=payload;
+const getAllIssueIntoDB = async (payload: any) => {
+    const { sort, type, status } = payload;
 
     const issues = await pool.query(`
         SELECT * FROM issues ORDER BY created_at DESC
@@ -55,6 +61,7 @@ const getAllIssueIntoDB = async (payload:any) => {
             created_at: issue.created_at,
             updated_at: issue.updated_at
         });
+
     }
 
     return formatted;
@@ -109,7 +116,7 @@ const updateIssueIntoDB = async (
     );
 
     const issue = issueResult.rows[0];
-    
+
 
     if (!issue) return null;
 
